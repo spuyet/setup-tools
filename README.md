@@ -10,8 +10,8 @@ A script to automatize software installation. Supported software:
 
 ## Options
 
-`SUDO=1`: Allow to prefix with `sudo` all the executed commands.
-`SSH=user@hostname`: Allow you to install a software on a remote machine.
+- `SUDO=1`: Allow to prefix with `sudo` all the executed commands.
+- `SSH=user@hostname`: Allow you to install a software on a remote machine.
 
 ## Examples
 
