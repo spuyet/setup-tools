@@ -1,11 +1,26 @@
-echo "Starting to deploy docker registry on: $2"
+with_sudo() {
+    while IFS='' read -r line || [[ -n "$line" ]]; do
+        line="sudo $(echo $line | sed 's/|/| sudo/g')"
+        local commands+=$line
+    done < $1
+    echo "$commands"
+}
 
-ssh $1@$2 << HERE
-    sudo apt-get -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-    sudo apt-get update
-    sudo apt-get -y install docker-ce docker-ce-cli containerd.io
-    sudo docker run hello-world
-    sudo usermod -aG docker $1
-HERE
+with_ssh() {
+    echo "ssh -oStrictHostKeyChecking=no $SSH 'export DOMAIN=$DOMAIN; export EMAIL=$EMAIL; $source'"
+}
+
+install() {
+    path="./$1/setup.sh"
+    if [ -z $SUDO ]; then source=$(cat $path); else source=$(with_sudo $path); fi
+    echo $source
+
+    if [ ! -z $SSH ]; then source=$(with_ssh); fi
+    echo $source
+    eval $source
+}
+
+for arg in "$@"
+do
+    install $arg
+done
