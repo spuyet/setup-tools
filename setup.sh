@@ -13,10 +13,7 @@ with_ssh() {
 install() {
     path="./$1/setup.sh"
     if [ -z $SUDO ]; then source=$(cat $path); else source=$(with_sudo $path); fi
-    echo $source
-
     if [ ! -z $SSH ]; then source=$(with_ssh); fi
-    echo $source
     eval $source
 }
 
